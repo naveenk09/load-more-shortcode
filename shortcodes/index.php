@@ -1,4 +1,5 @@
 <?php
+
 if(file_exists( dirname(__FILE__) . '/shortcode-query.php')) {
     require_once(dirname(__FILE__) . '/shortcode-query.php');
 }

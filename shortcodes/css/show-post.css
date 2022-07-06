@@ -1,0 +1,150 @@
+.post-link > a, .post-link > a:visited {
+    color: red;
+}
+.post-link > a:hover {
+    color: black;
+}
+button, input[type="button"], input[type="reset"], input[type="submit"] {
+    padding: 0;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+.filter-container {
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
+.post-container {
+    transition: all 0.3ms;
+    animation: popIn .2s;
+}
+
+.three-post-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    animation: popIn .2s;
+}
+.post-container.post-col-layout {
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes popIn {
+    from {transform: scale(0.85); opacity: 0;}
+    to {transform: scale(1); opacity: 1;}
+}
+
+.show-post-inner {
+    max-width: 1270px;
+    display: flex;
+}
+/* .content-container {
+    margin: 0 auto;
+} */
+
+.load-more-btn {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    margin: 0 auto;
+    background-color: #9FBC00;
+  }
+
+.show-post-container .show-post-inner {
+    margin: 0 auto;
+}
+.show-post-img-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.post-content-container {
+    padding-left: 50px;
+    padding-right: 50px;
+}
+
+.display-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.filter-section ul li {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    padding-bottom: 5px;
+}
+
+.filter-list > div {
+    font-weight: 500;
+    font-size: 22px;
+    border-bottom: 1px solid rgb(182, 70, 70);
+    margin-bottom: 5px;
+}
+
+.filter-item > label {
+    font-size: 16px;
+    padding-left: 5px;
+}
+
+.load-more-btn {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    margin: 0 auto;
+    background-color: #9FBC00;
+    justify-content: center;
+    align-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 100px;
+}
+
+.load-more-btn > span {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#load-more > span > svg {
+    height: 30px;
+}
+
+.two-post-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    animation: popIn .2s;
+}
+
+
+.post-container.column-post-layout {
+    display: flex;
+    flex-direction: column;
+}
+
+.post-content-container p {
+    text-align: center;
+}
+
+.masonry-layout {
+    min-width: 900px;
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(250px,1fr));
+    /* grid-auto-rows: 25px; */
+}
+.masonry-layout .content {
+    width: 200px;
+    /* float: left; */
+}
+
+.post-link {
+    text-align: center;
+}
+
+.post-link > a {
+    text-decoration: none;
+}
