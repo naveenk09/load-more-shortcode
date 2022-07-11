@@ -291,8 +291,11 @@ $(window).on("scroll", function() {
         success: function (res) {
           // $( '#load-more' ).hide();
           // console.log('After hiding Load More Btn');
-          
-          $( '.show-post-content' ).append(res.html);
+          if(masonryActive == false) {
+
+            $( '.show-post-content' ).append(res.html);
+            
+          }
           // if(checkedBox.is(":checked") == true) {
           //   if(checkedBox.val() == 'masonry-post-layout') {
   
