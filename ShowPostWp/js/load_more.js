@@ -1,17 +1,47 @@
 jQuery(document).ready(function($) { 
+  let queryArray = $('#myField').val();
+  let jsonArrayObj = JSON.parse(queryArray);
   let shortcodeContainer = $('.show-post-container');
   let loadContainer = $('.show-post-content');
   let loadMoreBtn = document.getElementById('load-more');
-  let postType = loadContainer.data('post');
-  let max_pages = loadContainer.data('max_pages');
-  let page_no = loadContainer.data('page_no');
-  let ppp = loadContainer.data('ppp');//ppp means posts per page
-  let dataOrder = loadContainer.data('order');
+  // let postType = loadContainer.data('post');
+  let max_pages = jsonArrayObj.maxPageNumber;
+  // let page_no = loadContainer.data('page_no');
+  // let ppp = loadContainer.data('ppp');//ppp means posts per page
+  // let dataOrder = loadContainer.data('order');
   let catList = []; //Contains list of categories that are checked
-  let masonryActive;//Tells whether masnory layout active or not
+  
   let checkedBox;
+  jsonArrayObj.categoryArray = catList;
+  // console.log(jsonArrayObj.categoryArray);
 
-  let currentPage = page_no;
+
+
+  console.log(jsonArrayObj);
+  // console.log(loadContainer.hasClass('masonry-layout'));
+  let masonryActive = loadContainer.hasClass('masonry-layout');//Tells whether masnory layout active or not
+  console.log(masonryActive);
+  
+  if(masonryActive == true)
+  {
+    item = $(' .content');
+    function reinitializeMasonry() {
+      let theNest = $(' .masonry-layout');
+      theNest.imagesLoaded( function() {
+        theNest.masonry({
+          itemSelector: '.content',
+          isAnimated: true,
+          columnWidth: 80,
+        })
+      })
+    }
+    reinitializeMasonry();
+  }
+
+
+
+
+  let currentPage = jsonArrayObj.paged;
   if( max_pages == 1){
     $( '#load-more' ).hide();
   }
@@ -95,11 +125,7 @@ jQuery(document).ready(function($) {
 // });
 
 //Check if data attribute of category filter is yes or no
-if(shortcodeContainer.data('cat_filter') == 'no') {
-  $('.category-filter').hide();
-}
-else {
-
+if(jsonArrayObj.category_filter == 'yes') {
   //Start of Category filter
   //When category is checked 
   $('.category-input').on('change', function() {
@@ -112,13 +138,18 @@ else {
   if($(this).prop("checked") == true){
     console.log("Checkbox is checked.");
     catList.push(this.value);
+    jsonArrayObj.categoryArray = catList;
+    console.log('Category Array------'+jsonArrayObj.categoryArray);
   }
   else if($(this).prop("checked") == false){
     console.log("Checkbox is unchecked.");
     if(catList.includes(this.value)){
       catList.splice(catList.indexOf(this.value), 1);
+      jsonArrayObj.categoryArray = catList;
+      console.log('Category Array------'+jsonArrayObj.categoryArray);
     }
   }
+
   $('.post-container').hide(300, "linear"); //Remove previous post container on every checkbox click
   $.ajax({
     type: 'POST',
@@ -126,16 +157,17 @@ else {
     dataType: 'json',
     data: {
       action: 'load_more',
-      paged: currentPage,
-      postType: postType,
-      category: catList == [] ? [] : catList,
-      posts_per_page: ppp,
-      order: dataOrder,
+      // paged: currentPage,
+      // postType: postType,
+      // category: catList == [] ? [] : catList,
+      // posts_per_page: ppp,
+      // order: dataOrder,
+      object: jsonArrayObj,
     },
     success: function (res) {
-      console.log('from dropdown sucess');
-      console.log(res.paged);
-      console.log(res.max);
+      // console.log('from dropdown sucess');
+      // console.log(res.paged);
+      // console.log(res.max);
       loadContainer.empty();//Here because of when empty button will come in place of remove element
       // $( '#load-more' ).hide();
       $( '.show-post-content' ).append(res.html);
@@ -153,6 +185,7 @@ else {
   });
   //End of Category Filter
 }
+
 
 
 
@@ -220,7 +253,6 @@ $('.layout-input').on('change', function() {
     }
     else{
       masonryActive = false;
-      console.log('From masnory');
       $('.show-post-content').removeClass(' masonry-layout');
       $('.show-post-content').addClass(' three-post-layout');
       loadContainer.masonry('destroy');
@@ -239,8 +271,9 @@ $(window).on("scroll", function() {
     // console.log("Button End Coordinate: "+btnCoordinate.bottom );
     if( ( $( window ).scrollTop() ) >= (( btnCoordinate.bottom - $( window ).height() ) + $( window ).scrollTop()) + 100 ) {                                                    //btnCoordinate.bottom <= ( $(window).scrollTop() + $(window).height() )
       currentPage++;
+      jsonArrayObj.paged = currentPage;
       //Change data attribute value
-      loadContainer.attr('data-page_no', currentPage);
+      // loadContainer.attr('data-page_no', currentPage);
       $.ajax({
         type: 'POST',
         url: products.ajaxurl,
@@ -248,18 +281,17 @@ $(window).on("scroll", function() {
         dataType: 'json',
         data: {
           action: 'load_more',
-          paged: currentPage,
-          postType: postType,
-          category: catList == [] ? [] : catList,
-          posts_per_page: ppp,
-          order: dataOrder,
+          // paged: currentPage,
+          // postType: postType,
+          // category: catList == [] ? [] : catList,
+          // posts_per_page: ppp,
+          // order: dataOrder,
+          object: jsonArrayObj,
         },
         success: function (res) {
-  
-          if( res.paged >= res.max ) {
-            $( '#load-more' ).hide();
-          }
           // $( '#load-more' ).hide();
+          // console.log('After hiding Load More Btn');
+          
           $( '.show-post-content' ).append(res.html);
           // if(checkedBox.is(":checked") == true) {
           //   if(checkedBox.val() == 'masonry-post-layout') {
@@ -273,23 +305,22 @@ $(window).on("scroll", function() {
             $( '#load-more' ).show();
           }
           if(checkedBox == undefined) {
-            console.log('Checkbox is not checked')
+            // console.log('Checkbox is not checked')
           }
-          else {
-            if(checkedBox.is(":checked") == true) {
-              if(checkedBox.val() == 'masonry-post-layout') {
-                // $('.masonry-layout').masonry('reloadItems');
-                // reinitializeMasonry();
-                // $('.masonry-layout').masonry('layout');
-                $('.masonry-layout').masonry()
-                  .append(res.html)
-                  .masonry('reloadItems')
-                  .masonry('appended', res.html)
-                  .masonry()
-              }
-            }
+
+          if( res.paged >= res.max ) {
+            $( '#load-more' ).hide();
           }
-  
+          console.log(loadContainer.hasClass('masnory-layout'));
+          if( masonryActive == true ) {
+            console.log('From load Container');
+            $('.masonry-layout').masonry()
+              .append(res.html)
+              .masonry('reloadItems')
+              .masonry('appended', res.html)
+              .masonry()
+          }
+
         },
       });
     } //End of scrollTop check if statement
@@ -297,7 +328,6 @@ $(window).on("scroll", function() {
   else {
     return;
   }
-
 }); //Scroll funtion end
 
 });
